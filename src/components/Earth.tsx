@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import { OrbitControls, Text, Billboard } from "@react-three/drei";
 import { TextureLoader } from "three";
@@ -8,7 +8,6 @@ import * as THREE from "three";
 import EarthMaterial from "@/components/EarthMaterial";
 import Starfield from "@/components/Starfield";
 import { Red_Hat_Display, Space_Grotesk } from "next/font/google";
-import { motion } from "framer-motion";
 
 const redhat = Red_Hat_Display({ subsets: ["latin"] });
 const space = Space_Grotesk({ subsets: ["latin"] });
@@ -38,12 +37,14 @@ export default function Earth() {
 }
 
 function Globe() {
-  const ref = useRef(null);
+  const ref = useRef<THREE.Mesh>(null!);
 
   const map = useLoader(TextureLoader, "/earth-daymap-4k.jpg");
 
   useFrame(() => {
-    ref.current.rotation.y += 0.0002;
+    if (ref.current) {
+      ref.current.rotation.y += 0.0002;
+    }
   });
 
   const textureDay = useLoader(TextureLoader, "/2k_neptune.jpg");

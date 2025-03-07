@@ -92,7 +92,7 @@ function getEarthMat(sunDirection = defaultSunDirection) {
   return material;
 }
 
-function EarthMaterial({ sunDirection }) {
+function EarthMaterial({ sunDirection }: any) {
   const material = React.useMemo(() => getEarthMat(sunDirection), []);
   return <primitive object={material} />;
 }

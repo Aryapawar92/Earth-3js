@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 const loader = new THREE.TextureLoader();
 
-function getSprite({ hasFog, color, opacity, path, pos, size }) {
+function getSprite({ hasFog, color, opacity, path, pos, size }: any) {
   const spriteMat = new THREE.SpriteMaterial({
     color,
     fog: hasFog,
