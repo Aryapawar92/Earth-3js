@@ -1,23 +1,30 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Text, Billboard } from "@react-three/drei";
 import { TextureLoader } from "three";
 import * as THREE from "three";
 import EarthMaterial from "@/components/EarthMaterial";
 import Starfield from "@/components/Starfield";
-import Nebula from "@/components/Nebula";
+import { Red_Hat_Display, Space_Grotesk } from "next/font/google";
+import { motion } from "framer-motion";
+
+const redhat = Red_Hat_Display({ subsets: ["latin"] });
+const space = Space_Grotesk({ subsets: ["latin"] });
 
 const sunDirection = { x: 0, y: 0, z: 1 };
 
 export default function Earth() {
   const { x, y, z } = sunDirection;
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-black ">
+    <div
+      className={`  w-full h-screen flex items-center justify-center bg-black  `}
+    >
       <Canvas
-        camera={{ position: [0, 0, 10] }}
+        camera={{ position: [0, 0, 15], fov: 60 }}
         gl={{ toneMapping: THREE.NoToneMapping }}
+        className="w-full h-screen "
       >
         <OrbitControls enableZoom={true} enablePan={false} />
         <ambientLight intensity={2} />
@@ -36,17 +43,49 @@ function Globe() {
   const map = useLoader(TextureLoader, "/earth-daymap-4k.jpg");
 
   useFrame(() => {
-    ref.current.rotation.y += 0.0007;
+    ref.current.rotation.y += 0.0002;
   });
 
   const textureDay = useLoader(TextureLoader, "/2k_neptune.jpg");
 
   return (
-    <group rotation-z={THREE.MathUtils.degToRad(-23)}>
+    <group rotation-z={THREE.MathUtils.degToRad(-23)} position={[0, -9.5, 0]}>
       <mesh ref={ref}>
-        <icosahedronGeometry args={[5.5, 32]} />
+        <icosahedronGeometry args={[10, 32]} />
         <EarthMaterial />
       </mesh>
+      <Billboard>
+        <Text
+          position={[0, 15, 0]}
+          fontSize={2.5}
+          color="white"
+          anchorX="center"
+          anchorY="middle"
+          font="/fonts/SpaceGrotesk-Bold.ttf"
+        >
+          The Earth We Need.
+        </Text>
+        <Text
+          position={[0, 13, 0]}
+          fontSize={0.5}
+          color="white"
+          anchorX="center"
+          anchorY="middle"
+          font="/fonts/SpaceGrotesk-Bold.ttf"
+        >
+          (scroll for zoom in or out)
+        </Text>
+        <Text
+          position={[0, 12, 0]}
+          fontSize={0.4}
+          color="white"
+          anchorX="center"
+          anchorY="middle"
+          font="/fonts/SpaceGrotesk-Bold.ttf"
+        >
+          Made by Arya Pawar.
+        </Text>
+      </Billboard>
     </group>
   );
 }
