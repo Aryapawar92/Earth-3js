@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useRef } from "react";
-import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text, Billboard } from "@react-three/drei";
-import { TextureLoader } from "three";
+
 import * as THREE from "three";
 import EarthMaterial from "@/components/EarthMaterial";
 import Starfield from "@/components/Starfield";
