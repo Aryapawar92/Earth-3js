@@ -2,21 +2,27 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import React, { useRef } from "react";
 
+// Define a type for the stars
+interface Star {
+  pos: THREE.Vector3;
+  update: (t: number) => number;
+}
+
 function getPoints({ numStars = 500 } = {}) {
-  function randomSpherePoint() {
+  function randomSpherePoint(): Star {
     const radius = Math.random() * 25 + 25;
     const u = Math.random();
     const v = Math.random();
     const theta = 2 * Math.PI * u;
     const phi = Math.acos(2 * v - 1);
-    const x = radius * Math.sin(phi) * Math.cos(theta); // Changed let -> const
-    const y = radius * Math.sin(phi) * Math.sin(theta); // Changed let -> const
-    const z = radius * Math.cos(phi); // Changed let -> const
-    const rate = Math.random() * 1;
+    const x = radius * Math.sin(phi) * Math.cos(theta);
+    const y = radius * Math.sin(phi) * Math.sin(theta);
+    const z = radius * Math.cos(phi);
+    const rate = Math.random();
     const prob = Math.random();
     const light = Math.random();
 
-    function update(t: any) {
+    function update(t: number): number {
       const lightness = prob > 0.8 ? light + Math.sin(t * rate) * 0.5 : light;
       return Math.min(1, Math.max(0, lightness));
     }
@@ -27,12 +33,12 @@ function getPoints({ numStars = 500 } = {}) {
     };
   }
 
-  const verts = [];
-  const colors = [];
-  const positions: any[] = [];
+  const verts: number[] = [];
+  const colors: number[] = [];
+  const positions: Star[] = [];
 
   for (let i = 0; i < numStars; i++) {
-    const p = randomSpherePoint(); // Changed let -> const
+    const p = randomSpherePoint();
     positions.push(p);
     verts.push(p.pos.x, p.pos.y, p.pos.z);
 
@@ -48,21 +54,18 @@ function getPoints({ numStars = 500 } = {}) {
     size: 0.2,
     vertexColors: true,
     transparent: true,
-    opacity: 1, // Ensure full opacity
+    opacity: 1,
   });
 
   const points = new THREE.Points(geo, mat);
 
-  function update(t: any) {
+  function update(t: number) {
     points.rotation.y -= 0.0002;
-    const colors = [];
+    const colors: number[] = [];
 
     for (let i = 0; i < numStars; i++) {
       const p = positions[i];
-      const { update } = p;
-      const brightness = update(t); // Changed let -> const
-
-      // Ensure stars stay white by using equal RGB values
+      const brightness = p.update(t);
       colors.push(brightness, brightness, brightness);
     }
 
@@ -75,11 +78,10 @@ function getPoints({ numStars = 500 } = {}) {
 }
 
 function Starfield() {
-  const ref = useRef<THREE.Mesh>(null!);
+  const ref = useRef<THREE.Points>(null!);
   const points = getPoints({ numStars: 3000 });
 
-  useFrame((state) => {
-    const { clock } = state; // Changed let -> const
+  useFrame(({ clock }) => {
     ref.current.userData.update(clock.elapsedTime);
   });
 

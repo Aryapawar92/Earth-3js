@@ -7,10 +7,6 @@ import { TextureLoader } from "three";
 import * as THREE from "three";
 import EarthMaterial from "@/components/EarthMaterial";
 import Starfield from "@/components/Starfield";
-import { Red_Hat_Display, Space_Grotesk } from "next/font/google";
-
-const redhat = Red_Hat_Display({ subsets: ["latin"] });
-const space = Space_Grotesk({ subsets: ["latin"] });
 
 const sunDirection = { x: 0, y: 0, z: 1 };
 
@@ -39,15 +35,11 @@ export default function Earth() {
 function Globe() {
   const ref = useRef<THREE.Mesh>(null!);
 
-  const map = useLoader(TextureLoader, "/earth-daymap-4k.jpg");
-
   useFrame(() => {
     if (ref.current) {
       ref.current.rotation.y += 0.0002;
     }
   });
-
-  const textureDay = useLoader(TextureLoader, "/2k_neptune.jpg");
 
   return (
     <group rotation-z={THREE.MathUtils.degToRad(-23)} position={[0, -9.5, 0]}>
