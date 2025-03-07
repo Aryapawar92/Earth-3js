@@ -1,6 +1,6 @@
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import React from "react";
+import React, { useRef } from "react";
 
 function getPoints({ numStars = 500 } = {}) {
   function randomSpherePoint() {
@@ -9,14 +9,14 @@ function getPoints({ numStars = 500 } = {}) {
     const v = Math.random();
     const theta = 2 * Math.PI * u;
     const phi = Math.acos(2 * v - 1);
-    let x = radius * Math.sin(phi) * Math.cos(theta);
-    let y = radius * Math.sin(phi) * Math.sin(theta);
-    let z = radius * Math.cos(phi);
+    const x = radius * Math.sin(phi) * Math.cos(theta); // Changed let -> const
+    const y = radius * Math.sin(phi) * Math.sin(theta); // Changed let -> const
+    const z = radius * Math.cos(phi); // Changed let -> const
     const rate = Math.random() * 1;
     const prob = Math.random();
     const light = Math.random();
 
-    function update(t) {
+    function update(t: any) {
       const lightness = prob > 0.8 ? light + Math.sin(t * rate) * 0.5 : light;
       return Math.min(1, Math.max(0, lightness));
     }
@@ -29,10 +29,10 @@ function getPoints({ numStars = 500 } = {}) {
 
   const verts = [];
   const colors = [];
-  const positions = [];
+  const positions: any[] = [];
 
   for (let i = 0; i < numStars; i++) {
-    let p = randomSpherePoint();
+    const p = randomSpherePoint(); // Changed let -> const
     positions.push(p);
     verts.push(p.pos.x, p.pos.y, p.pos.z);
 
@@ -53,14 +53,14 @@ function getPoints({ numStars = 500 } = {}) {
 
   const points = new THREE.Points(geo, mat);
 
-  function update(t) {
+  function update(t: any) {
     points.rotation.y -= 0.0002;
     const colors = [];
 
     for (let i = 0; i < numStars; i++) {
       const p = positions[i];
       const { update } = p;
-      let brightness = update(t);
+      const brightness = update(t); // Changed let -> const
 
       // Ensure stars stay white by using equal RGB values
       colors.push(brightness, brightness, brightness);
@@ -75,11 +75,11 @@ function getPoints({ numStars = 500 } = {}) {
 }
 
 function Starfield() {
-  const ref = React.useRef();
+  const ref = useRef<THREE.Mesh>(null!);
   const points = getPoints({ numStars: 3000 });
 
   useFrame((state) => {
-    let { clock } = state;
+    const { clock } = state; // Changed let -> const
     ref.current.userData.update(clock.elapsedTime);
   });
 
